@@ -15,6 +15,16 @@ register(
 )
 
 register(
+    id='forex-backtest-v0',
+    entry_point='gym_anytrading.envs:ForexEnv',
+    kwargs={
+        'df': deepcopy(datasets.BACKTEST_DATASET),
+        'window_size': 24,
+        'frame_bound': (24, len(datasets.BACKTEST_DATASET))
+    }
+)
+
+register(
     id='stocks-v0',
     entry_point='gym_anytrading.envs:StocksEnv',
     kwargs={

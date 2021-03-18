@@ -22,8 +22,16 @@ class ForexEnv(TradingEnv):
         prices[self.frame_bound[0] - self.window_size]  # validate index (TODO: Improve validation)
         prices = prices[self.frame_bound[0]-self.window_size:self.frame_bound[1]]
 
-        diff = np.insert(np.diff(prices), 0, 0)
-        signal_features = np.column_stack((prices, diff))
+        diff = np.insert(np.diff(prices), 0, 0)   #diff is used in arr to calc diference in price of prev index... kinda like %change without the%
+        
+        #yemi--
+        #print(self.df.columns)
+        open = self.df.loc[:, 'Open'].to_numpy()
+        high = self.df.loc[:, 'High'].to_numpy()
+        low = self.df.loc[:, 'Low'].to_numpy()
+        signal_features = np.stack((prices, diff, open, high, low), axis=-1)
+        
+        #signal_features = np.column_stack((prices, diff))
 
         return prices, signal_features
 

@@ -88,6 +88,7 @@ class TradingEnv(gym.Env):
         if trade:
             self._position = self._position.opposite()
             self._last_trade_tick = self._current_tick
+            #yemi-- multiply step reward by 10 here if a trade occurs
 
         self._position_history.append(self._position)
         observation = self._get_observation()
@@ -97,7 +98,7 @@ class TradingEnv(gym.Env):
             position = self._position.value
         )
         self._update_history(info)
-
+        #yemi to-do, append position as a 1 hot vector i.e +1 unit is [0,1], -1 unit is [1,0]
         return observation, step_reward, self._done, info
 
 
