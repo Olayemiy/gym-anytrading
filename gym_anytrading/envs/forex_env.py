@@ -2,6 +2,8 @@ import numpy as np
 
 from .trading_env import TradingEnv, Actions, Positions
 
+#yemi-defined
+from running_z_score import Running_Z_Score
 
 class ForexEnv(TradingEnv):
 
@@ -24,12 +26,30 @@ class ForexEnv(TradingEnv):
 
         diff = np.insert(np.diff(prices), 0, 0)   #diff is used in arr to calc diference in price of prev index... kinda like %change without the%
         
-        #yemi--
+        #yemi--------------------------------------------------------------------
         #print(self.df.columns)
         open = self.df.loc[:, 'Open'].to_numpy()
         high = self.df.loc[:, 'High'].to_numpy()
         low = self.df.loc[:, 'Low'].to_numpy()
-        signal_features = np.stack((prices, diff, open, high, low), axis=-1)
+
+
+        norm_close = np.empty_like(prices)
+        norm_open = np.empty_like(open)
+        norm_high = np.empty_like(high)
+        norm_low = np.empty_like(low)
+
+        normalize_data_close = Running_Z_Score(mode = "min-max", period = 96)
+        normalize_data_open = Running_Z_Score(mode = "min-max", period = 96)
+        normalize_data_high = Running_Z_Score(mode = "min-max", period = 96)
+        normalize_data_low = Running_Z_Score(mode = "min-max", period = 96)
+
+        for price, o, h, l, idx in zip(prices, open, high, low, range(prices.size)):
+            norm_close[idx] = normalize_data_close.norm(price)
+            norm_open[idx] = normalize_data_open.norm(o)
+            norm_high[idx] = normalize_data_high.norm(h)
+            norm_low[idx] = normalize_data_low.norm(l)
+
+        signal_features = np.stack((norm_close, diff, norm_open, norm_high, norm_low), axis=-1)
         
         #signal_features = np.column_stack((prices, diff))
 
