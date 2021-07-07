@@ -49,7 +49,8 @@ class ForexEnv(TradingEnv):
             norm_high[idx] = normalize_data_high.norm(h)
             norm_low[idx] = normalize_data_low.norm(l)
 
-        signal_features = np.stack((norm_close, diff, norm_open, norm_high, norm_low), axis=-1)
+        #signal_features = np.stack((norm_close, diff, norm_open, norm_high, norm_low), axis=-1)
+        signal_features = np.column_stack((norm_close, diff))
         
         #signal_features = np.column_stack((prices, diff))
 
